@@ -8,7 +8,7 @@ const connectBD = require("./sequelize/config/connectDB");
 const app = express();
 
 var corsOptions = {
-  origin: process.env.FRONT_HOST,
+  origin: process.env.FRONTEND_HOST,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
