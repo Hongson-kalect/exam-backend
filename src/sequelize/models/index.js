@@ -1,25 +1,47 @@
 "use strict";
-
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const process = require("process");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
+const config = require(__dirname + "/../config/config.js")[env];
+console.log(config);
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
+// if (config.use_env_variable) {
+//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+// } else {
+//   sequelize = new Sequelize(
+//     config.database,
+//     config.username,
+//     config.password,
+//     config
+//   );
+// }
+
+sequelize = new Sequelize(
+  process.env.MYSQL_DATABASE,
+  process.env.MYSQL_USERNAME,
+  process.env.MYSQL_PASS,
+  {
+    host: process.env.MYSQL_HOST,
+    dialect: "postgres",
+    port: process.env.MYSQL_PORT,
+    logging: false,
+  }
+);
+const connectBD = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully 2.");
+  } catch (error) {
+    console.error("Unable to connect to the database: 2", error);
+  }
+};
+connectBD();
 
 fs.readdirSync(__dirname)
   .filter((file) => {
