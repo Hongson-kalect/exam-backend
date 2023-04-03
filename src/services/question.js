@@ -22,6 +22,10 @@ const questionSevices = {
     if (result) return true;
     else return false;
   },
+  addAllQuestion: async (data) => {
+    const data = await db.Question.findAll();
+    return { status: 1, data };
+  },
   editQuestion: async (data) => {
     let anser = "";
     for (i = 0; i < data.anser.length; i++) {
