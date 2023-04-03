@@ -13,24 +13,24 @@ const { getEmailByToken } = require("./global");
 const questionService = require("./question");
 const historySevices = {
   getHistory: async (data) => {
-    if (checkValidUser(data.userId, data.subjectId)) {
+    if (await checkValidUser(data.userId, data.subjectId)) {
       const email = await getEmailByToken(data.userId);
       if (data.id) {
         let score = 0;
         let res = await db.History.findOne({
           // where: { subjectId: data.subjectId, testRoomId: data.testRoomId,userId:data.userId,id:id },
-          where: { id: data.id },
+          where: { id: Number(data.id) || 0 },
           raw: true,
         });
         const getRoom = await db.TestRoom.findOne({
           where: {
-            id: data.roomId,
+            id: Number(data.roomId) || 0,
           },
           raw: true,
         });
         const test = await db.Test.findOne({
           where: {
-            id: data.testId,
+            id: Number(data.testId) || 0,
           },
         });
         if (getRoom.allowSeeScore) {
@@ -45,8 +45,8 @@ const historySevices = {
         if (data.getAll) {
           result = await db.History.findAll({
             where: {
-              subjectId: data.subjectId,
-              testRoomId: data.roomId,
+              subjectId: Number(data.subjectId) || 0,
+              testRoomId: Number(data.roomId),
               timeAttemp: {
                 [Op.gt]: data.isFree == "1" ? -1 : 0,
               },
@@ -57,9 +57,7 @@ const historySevices = {
                   },
                 },
                 {
-                  timeAttemp: {
-                    [Op.like]: `%${data.search}%`,
-                  },
+                  timeAttemp: Number(data.search) || -1,
                 },
               ],
             },
@@ -72,8 +70,8 @@ const historySevices = {
         } else
           result = await db.History.findAll({
             where: {
-              subjectId: data.subjectId,
-              testRoomId: data.roomId,
+              subjectId: Number(data.subjectId) || 0,
+              testRoomId: Number(data.roomId) || 0,
               userId: email,
               timeAttemp: {
                 [Op.gt]: data.isFree === "1" ? -1 : 0,
@@ -108,80 +106,6 @@ const historySevices = {
     //   },
     // });
     return false;
-  },
-  add: async (data) => {
-    let tests = "";
-    for (i = 0; i < data.testSubjectList.length; i++) {
-      if (data.testSubjectList[i] != "") {
-        tests += data.testSubjectList[i] + "|";
-      }
-    }
-    const result = await db.History.create({
-      name: data.name,
-      subjectId: data.subjectId,
-      testId: tests,
-      limitTime: data.limitTime,
-      time: data.shift,
-      day: data.date,
-      allowSeeResult: data.seeResult,
-      allowSeeExplane: data.seeExplain,
-      allowSeeScore: data.seeScore,
-      maxAttemps: data.attempLimit,
-      description: data.description || "",
-    });
-    if (result) return true;
-    else return false;
-  },
-
-  editHistory: async (data) => {
-    if (await checkValidUser(data.userId, data.subjectId)) {
-      let testId = data.testId.join("|");
-      await db.History.update(
-        {
-          name: data.name,
-          description: data.description,
-          maxAttemps: data.maxAttemps,
-          testId,
-          limitTime: data.limmitTime,
-          time: data.time,
-          allowSeeExplane: data.allowSeeExplane,
-          allowSeeResult: data.allowSeeExplane,
-          allowSeeScore: data.allowSeeScore,
-        },
-        {
-          where: {
-            id: data.historyId,
-          },
-        }
-      );
-      return { status: 1, message: "Edit completed" };
-    } else return { status: -1, message: "You not have permission" };
-  },
-  delHistory: async (data) => {
-    if (await checkValidUser(data.userId, data.subjectId)) {
-      await db.History.destroy({
-        where: {
-          id: data.id,
-        },
-      });
-      return { status: 1, message: "Delete completed" };
-    } else
-      return { status: -1, message: "You not have permission on this task" };
-  },
-  getHistoryType: async (data) => {
-    const result = await db.History.findAll({
-      attributes: ["type"],
-      group: ["type"],
-    });
-    return result;
-  },
-
-  addHistoryType: async (data) => {
-    const result = await db.History.create({
-      attributes: ["type"],
-      group: ["type"],
-    });
-    return result;
   },
 };
 module.exports = historySevices;

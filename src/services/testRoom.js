@@ -15,13 +15,13 @@ const testRoomSevices = {
     const email = await getEmailByToken(data.userId);
     const result = await db.TestRoom.create({
       name: data.name,
-      subjectId: data.subjectId,
+      subjectId: Number(data.subjectId) || 0,
       testId: testId,
       limitTime: data.limitTime,
       time: data.shift,
       day: data.date,
       freeTest: 0,
-      maxAttemps: data.attempLimit,
+      maxAttemps: Number(data.attempLimit) || 0,
       description: data.description,
       allowSeeResult: data.seeResult,
       allowSeeExplane: data.seeExplain,
@@ -31,15 +31,18 @@ const testRoomSevices = {
     else return false;
   },
   getTestRoom: async (data) => {
-    if (checkValidUser(data.userId, data.subjectId)) {
+    if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.roomId) {
         const res = await db.TestRoom.findOne({
-          where: { subjectId: data.subjectId, id: data.roomId },
+          where: {
+            subjectId: Number(data.subjectId) || 0,
+            id: Number(data.roomId) || 0,
+          },
         });
         return res;
       } else if (data.subjectId) {
         const res = await db.TestRoom.findAll({
-          where: { subjectId: data.subjectId },
+          where: { subjectId: Number(data.subjectId) || 0 },
         });
         return res;
       }
@@ -66,7 +69,7 @@ const testRoomSevices = {
         {
           name: data.name,
           description: data.description,
-          maxAttemps: data.maxAttempt,
+          maxAttemps: Number(data.maxAttempt) || 0,
           testId,
           limitTime: data.limmitTime,
           time: data.time,
@@ -76,7 +79,7 @@ const testRoomSevices = {
         },
         {
           where: {
-            id: data.testRoomId,
+            id: Number(data.testRoomId) || 0,
           },
         }
       );
@@ -87,7 +90,7 @@ const testRoomSevices = {
     if (await checkValidUser(data.userId, data.subjectId)) {
       await db.TestRoom.destroy({
         where: {
-          id: data.id,
+          id: Number(data.id) || 0,
         },
       });
       return { status: 1, message: "Delete completed" };
@@ -99,8 +102,8 @@ const testRoomSevices = {
       const userEmail = await getEmailByToken(data.userId);
       const getData = await db.History.findOne({
         where: {
-          userId: userEmail,
-          testRoomId: data.roomId,
+          userId: Number(userEmail) || 0,
+          testRoomId: Number(data.roomId) || 0,
           submited: false,
         },
         raw: true,
@@ -133,7 +136,7 @@ const testRoomSevices = {
       const isFreeTest = await db.TestRoom.findOne({
         attributes: ["freeTest", "maxAttemps"],
         where: {
-          id: data.roomId,
+          id: Number(data.roomId),
         },
         raw: true,
       });
@@ -145,13 +148,11 @@ const testRoomSevices = {
             [sequelize.fn("max", sequelize.col("timeAttemp")), "timeAttemp"],
           ],
           where: {
-            testRoomId: data.roomId,
+            testRoomId: Number(data.roomId) || data.roomId || 0,
             userId: userEmail,
           },
           raw: true,
         });
-        console.log(userEmail);
-        console.log(currentAttempt);
         const attemp = (currentAttempt.timeAttemp || 0) + 1;
         if (attemp <= isFreeTest.maxAttemps)
           return {
@@ -166,11 +167,6 @@ const testRoomSevices = {
       }
     }
     return { status: -1, message: "You not have permission on this task" };
-    const result = await db.TestRoom.create({
-      attributes: ["type"],
-      group: ["type"],
-    });
-    return result;
   },
   startAttempt: async (data) => {
     if (await checkValidUser(data.userId, data.subjectId)) {
@@ -178,34 +174,41 @@ const testRoomSevices = {
       const getLimeLimit = await db.TestRoom.findOne({
         attributes: ["limitTime"],
         where: {
-          id: data.roomId,
+          id: Number(data.roomId) || 0,
         },
       });
       const limitTime = Number(getLimeLimit.limitTime) || "10";
-      const createHistory = await db.History.create({
-        userId: userEmail,
-        subjectId: data.subjectId,
-        testRoomId: data.roomId,
-        testId: data.testId,
-        userAnser: "",
-        timeAttemp: data.timeAttemp,
-        submited: false,
-      });
-      // setTimeout(async () => {
-      //   await db.History.update(
-      //     {
-      //       submited: true,
-      //     },
-      //     {
-      //       where: {
-      //         subjectId: data.subjectId,
-      //         testRoomId: data.roomId,
-      //         testId: data.testId,
-      //         timeAttemp: data.timeAttemp,
-      //       },
-      //     }
-      //   );
-      // }, limitTime * 1000);
+      const createHistory = await db.History.create(
+        {
+          userId: userEmail,
+          subjectId: Number(data.subjectId) || 0,
+          testRoomId: Number(data.roomId) || 0,
+          testId: Number(data.testId) || 0,
+          userAnser: "",
+          timeAttemp: Number(data.timeAttemp) || 0,
+          submited: false,
+        },
+        {
+          raw: true,
+        }
+      );
+      const historyResId = createHistory.id;
+      setTimeout(async () => {
+        await db.History.update(
+          {
+            submited: true,
+          },
+          {
+            where: {
+              id: Number(historyResId) || 0,
+              // subjectId: data.subjectId,
+              // testRoomId: data.roomId,
+              // testId: data.testId,
+              // timeAttemp: data.timeAttemp,
+            },
+          }
+        );
+      }, Number(limitTime) * 60000);
       return { status: 1, data: createHistory };
     }
     return { status: -1, message: "You not have permission on this task" };

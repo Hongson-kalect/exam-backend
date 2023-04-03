@@ -23,7 +23,7 @@ const checkValidUser = async (userToken, subjectId) => {
   email = (await getEmailByToken(userToken)) || "|||";
   const subjectRaw = await db.Subject.findOne({
     where: {
-      id: subjectId,
+      id: Number(subjectId),
     },
   });
   const subject = subjectRaw?.dataValues || null;
@@ -55,7 +55,7 @@ const getUserScore = async (userAnserString, testId) => {
   const getTest = await db.Test.findOne({
     attributes: ["question"],
     where: {
-      id: testId,
+      id: Number(testId) || 0,
     },
     raw: true,
   });
@@ -97,16 +97,16 @@ const changeAnserToNumber = (userAnserArr) => {
   for (let index = 0; index < userAnserArr.length; index++) {
     switch (userAnserArr[index]) {
       case "a":
-        numberArr.push("0");
+        numberArr.push(0);
         break;
       case "b":
-        numberArr.push("1");
+        numberArr.push(1);
         break;
       case "c":
-        numberArr.push("2");
+        numberArr.push(2);
         break;
       case "d":
-        numberArr.push("3");
+        numberArr.push(3);
         break;
 
       default:

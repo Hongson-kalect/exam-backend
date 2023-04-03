@@ -16,14 +16,17 @@ const examSevices = {
     if (data.roomId) {
       let anserList = [];
       const res = await db.TestRoom.findOne({
-        where: { subjectId: data.subjectId, Id: data.roomId },
+        where: {
+          subjectId: Number(data.subjectId) || 0,
+          id: Number(data.roomId) || 0,
+        },
       });
       let testArr = res.dataValues.testId.split("|");
       testArr = testArr.filter((item) => item !== "");
       const testId = testArr[Math.floor(Math.random() * testArr.length)];
 
       const test = await getTest({
-        id: testId,
+        id: Number(testId) || 0,
         userId: data.userId,
         subjectId: data.subjectId,
       });
@@ -39,7 +42,7 @@ const examSevices = {
           .split("-")
           .filter((item) => item !== "");
         const questionDetailRes = await getQuestion({
-          id: questionCode[0],
+          id: Number(questionCode[0]) || 0,
           userId: data.userId,
           subjectId: data.subjectId,
         });
@@ -64,15 +67,18 @@ const examSevices = {
   },
   getContineu: async (data) => {
     console.log(data);
-    if (checkValidUser(data.userId, data.subjectId)) {
+    if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.roomId) {
         let anserList = [];
         const res = await db.TestRoom.findOne({
-          where: { subjectId: data.subjectId, Id: data.roomId },
+          where: {
+            subjectId: Number(data.subjectId) || 0,
+            id: Number(data.roomId) || 0,
+          },
         });
 
         const test = await getTest({
-          id: data.testId,
+          id: Number(data.testId) || 0,
           userId: data.userId,
           subjectId: data.subjectId,
         });
@@ -88,7 +94,7 @@ const examSevices = {
             .split("-")
             .filter((item) => item !== "");
           const questionDetailRes = await getQuestion({
-            id: questionCode[0],
+            id: Number(questionCode[0]) || 0,
             userId: data.userId,
             subjectId: data.subjectId,
           });
@@ -119,7 +125,7 @@ const examSevices = {
     const email = await getEmailByToken(data.userId);
 
     const test = await getTest({
-      id: data.testId,
+      id: Number(data.testId) || 0,
       userId: data.userId,
       subjectId: data.subjectId,
     });
@@ -137,7 +143,7 @@ const examSevices = {
         },
         {
           where: {
-            id: data.historyId,
+            id: Number(data.historyId) || 0,
           },
         }
       );
@@ -149,11 +155,11 @@ const examSevices = {
         },
         {
           where: {
-            subjectId: data.subjectId,
-            testRoomId: data.roomId,
-            testId: data.testId,
+            subjectId: Number(data.subjectId) || 0,
+            testRoomId: Number(data.roomId) || 0,
+            testId: Number(data.testId) || 0,
             userId: email,
-            timeAttemp: data.timeAttemp,
+            timeAttemp: Number(data.timeAttemp) || 0,
           },
         }
       );
@@ -188,7 +194,7 @@ const examSevices = {
           },
           {
             where: {
-              id: data.historyId,
+              id: Number(data.historyId) || 0,
             },
           }
         );
@@ -199,11 +205,11 @@ const examSevices = {
           },
           {
             where: {
-              subjectId: data.subjectId,
-              testRoomId: data.roomId,
-              testId: data.testId,
+              subjectId: Number(data.subjectId) || 0,
+              testRoomId: Number(data.roomId) || 0,
+              testId: Number(data.testId) || 0,
               userId: email,
-              timeAttemp: data.timeAttemp,
+              timeAttemp: Number(data.timeAttemp) || 0,
             },
           }
         );
@@ -218,11 +224,11 @@ const examSevices = {
       },
       {
         where: {
-          subjectId: data.subjectId,
-          testRoomId: data.roomId,
-          testId: data.testId,
+          subjectId: Number(data.subjectId) || 0,
+          testRoomId: Number(data.roomId) || 0,
+          testId: Number(data.testId) || 0,
           userId: email,
-          timeAttemp: data.timeAttemp,
+          timeAttemp: Number(data.timeAttemp) || 0,
         },
       }
     );
@@ -238,7 +244,7 @@ const examSevices = {
     }
     const result = await db.Exam.create({
       name: data.name,
-      subjectId: data.subjectId,
+      subjectId: Number(data.subjectId) || 0,
       testId: tests,
       limitTime: data.limitTime,
       time: data.shift,
@@ -282,7 +288,7 @@ const examSevices = {
       },
       {
         where: {
-          id: data.id,
+          id: Number(data.id) || 0,
         },
       }
     );
@@ -292,7 +298,7 @@ const examSevices = {
   delExam: async (data) => {
     const result = await db.Exam.destroy({
       where: {
-        id: data.id,
+        id: Number(data.id) || 0,
       },
     });
     return true;
@@ -304,9 +310,9 @@ const getAttempsTime = async (subjectId, roomId, testId) => {
   const result = await db.History.findAll({
     attributes: ["id"],
     where: {
-      subjectId: subjectId,
-      testRoomId: roomId,
-      testId: testId,
+      subjectId: Number(subjectId) || 0,
+      testRoomId: Number(roomId) || 0,
+      testId: Number(testId) || 0,
       timeAttemp: {
         [Op.not]: null,
       },
@@ -325,7 +331,7 @@ const checkScore = async (anser, userAnserCharacter) => {
     let { anserTimes, correctTimes } = await db.Question.findOne({
       attributes: ["anserTimes", "correctTimes"],
       where: {
-        id: anserArr[0],
+        id: Number(anserArr[0]),
       },
     });
     anserTimes++;
@@ -340,7 +346,7 @@ const checkScore = async (anser, userAnserCharacter) => {
       },
       {
         where: {
-          id: anserArr[0],
+          id: Number(anserArr[0]) || 0,
         },
       }
     );
@@ -352,16 +358,16 @@ const changeAnserToNumber = (userAnserArr) => {
   for (let index = 0; index < userAnserArr.length; index++) {
     switch (userAnserArr[index]) {
       case "a":
-        numberArr.push("0");
+        numberArr.push(0);
         break;
       case "b":
-        numberArr.push("1");
+        numberArr.push(1);
         break;
       case "c":
-        numberArr.push("2");
+        numberArr.push(2);
         break;
       case "d":
-        numberArr.push("3");
+        numberArr.push(3);
         break;
 
       default:
@@ -379,7 +385,7 @@ const getExplain = async (anser) => {
     const res = await db.Question.findOne({
       attributes: ["explain"],
       where: {
-        id: questionArray[index].split("-")[0],
+        id: Number(questionArray[index].split("-")[0]) || 0,
       },
     });
     explain.push(res.dataValues.explain);

@@ -63,7 +63,7 @@ const {
   closeTab,
 } = require("../controllers/exam");
 const { getUserByEmail } = require("../controllers/user");
-const { getHistory, addHistory } = require("../controllers/history");
+const { getHistory } = require("../controllers/history");
 const { testLayout } = require("../controllers/test-layout");
 indexRoute.post("/signup", signUp);
 indexRoute.post("/login", getUser);
@@ -108,10 +108,7 @@ indexRoute.get("/test-room/get", getTestRoom);
 indexRoute.delete("/test-room/del", delTestRoom);
 indexRoute.put("/test-room/edit", editTestRoom);
 
-indexRoute.post("/history", addHistory);
 indexRoute.get("/history/get", getHistory);
-indexRoute.delete("/history/del", delTestRoom);
-indexRoute.put("/history/edit", editTestRoom);
 indexRoute.get("/history/unsubmit", getUnSubmit);
 indexRoute.get("/get-attempt", getAttempt);
 indexRoute.post("/start-exam", startAttempt);

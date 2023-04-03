@@ -123,14 +123,14 @@ const ExcelToDatabase = async (file, tableName) => {
       console.log(" row", cellAsString[1]);
       //Get first row
       if (!isSetCurrentRow) {
-        currentRow = cellAsString[1];
+        currentRow = Number(cellAsString[1]) || cellAsString[1];
         isSetCurrentRow = true;
       }
       //Create new line if go to orther row
       if (cellAsString[1] !== currentRow) {
         await db[tableName].create(addValue);
         addValue = {};
-        currentRow = cellAsString[1];
+        currentRow = Number(cellAsString[1]) || cellAsString[1];
       }
       addValue[tableColumn[HeaderArray.indexOf(cellAsString[0]) + 1]] =
         worksheet[cell].v;

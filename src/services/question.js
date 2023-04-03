@@ -2,7 +2,6 @@ const sequelize = require("sequelize");
 const Op = sequelize.Op;
 const db = require("../sequelize/models");
 const { checkValidUser } = require("../ultis/function");
-const { getEmailByToken } = require("./global");
 const questionSevices = {
   add: async (data) => {
     let anser = "";
@@ -17,7 +16,7 @@ const questionSevices = {
       question: data.question,
       anser: anser,
       explain: data.explain,
-      subjectId: data.subjectId,
+      subjectId: Number(data.subjectId) || 0,
     });
     if (result) return true;
     else return false;
@@ -40,7 +39,7 @@ const questionSevices = {
       },
       {
         where: {
-          id: data.id,
+          id: Number(data.id) || 0,
         },
       }
     );
@@ -50,7 +49,7 @@ const questionSevices = {
   delQuestion: async (data) => {
     const result = await db.Question.destroy({
       where: {
-        id: data.id,
+        id: Number(data.id) || 0,
       },
     });
     return true;
@@ -66,7 +65,7 @@ const questionSevices = {
     if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.id) {
         const res = await db.Question.findOne({
-          where: { id: data.id },
+          where: { id: Number(data.id) || 0 },
         });
         return res;
       }
@@ -91,7 +90,7 @@ const questionSevices = {
               },
             },
             {
-              subjectId: data.subjectId,
+              subjectId: Number(data.subjectId) || 0,
             },
           ],
         },

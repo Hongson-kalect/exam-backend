@@ -14,7 +14,7 @@ const testSevices = {
     if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.id) {
         const res = await db.Test.findOne({
-          where: { id: data.id },
+          where: { id: Number(data.id) || 0 },
         });
         return res;
       }
@@ -23,14 +23,14 @@ const testSevices = {
           [Op.and]: [
             {
               [Op.or]: {
-                id: Number(data.input),
+                id: Number(data.input) || 0,
                 code: { [Op.like]: `%${data.input}%` || "" },
                 name: { [Op.like]: `%${data.input}%` || "" },
                 description: { [Op.like]: `%${data.input}%` || "" },
               },
             },
             {
-              subjectId: data.subjectId,
+              subjectId: Number(data.subjectId) || 0,
             },
           ],
         },
@@ -44,7 +44,7 @@ const testSevices = {
     for (i = 0; i < data.questions.length; i++) {
       if (data.questions[i] != "") {
         const questionData = await questionService.getQuestion({
-          id: data.questions[i],
+          id: Number(data.questions[i]) || 0,
           userId: data.userId,
           subjectId: data.subjectId,
         });
@@ -65,7 +65,7 @@ const testSevices = {
       name: data.name,
       question: question,
       description: data.description,
-      subjectId: data.subjectId,
+      subjectId: Number(data.subjectId) || 0,
     });
     if (result) return true;
     else return false;
@@ -76,7 +76,7 @@ const testSevices = {
     for (i = 0; i < data.questions.length; i++) {
       if (data.questions[i] != "") {
         const questionData = await questionService.getQuestion({
-          id: data.questions[i],
+          id: number(data.questions[i]) || 0,
           subjectId: data.subjectId,
           userId: data.userId,
         });
@@ -102,7 +102,7 @@ const testSevices = {
       },
       {
         where: {
-          id: data.id,
+          id: Number(data.id) || 0,
         },
       }
     );
@@ -112,7 +112,7 @@ const testSevices = {
   delTest: async (data) => {
     const result = await db.Test.destroy({
       where: {
-        id: data.id,
+        id: Number(data.id) || 0,
       },
     });
     return true;
@@ -129,7 +129,7 @@ const testSevices = {
     const result = await db.Test.findAll({
       attributes: ["id", "code", "name"],
       where: {
-        subjectId: data.subjectId,
+        subjectId: Number(data.subjectId) || 0,
       },
     });
     return result;

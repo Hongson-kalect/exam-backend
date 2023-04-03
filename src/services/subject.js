@@ -33,7 +33,7 @@ const subjectSevices = {
   leaveRoom: async (data) => {
     const subjectRaw = await db.Subject.findOne({
       where: {
-        id: data.subjectId,
+        id: Number(data.subjectId) || 0,
       },
     });
     const subject = subjectRaw?.dataValues || null;
@@ -48,7 +48,7 @@ const subjectSevices = {
             },
             {
               where: {
-                id: data.subjectId,
+                id: Number(data.subjectId) || 0,
               },
             }
           );
@@ -114,7 +114,7 @@ const subjectSevices = {
         },
         {
           where: {
-            id: data.subjectId,
+            id: Number(data.subjectId) || 0,
           },
         }
       );
@@ -132,7 +132,7 @@ const subjectSevices = {
     if (subject?.host?.includes(email)) {
       const result = await db.Subject.destroy({
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
       });
       return {
@@ -146,7 +146,7 @@ const subjectSevices = {
   getInfo: async (data) => {
     const result = await db.Subject.findOne({
       where: {
-        id: data.id,
+        id: Number(data.id) || 0,
       },
     });
     if (result) return result;
@@ -156,7 +156,7 @@ const subjectSevices = {
     const result = await db.Subject.findOne({
       attributes: ["name"],
       where: {
-        id: data.id,
+        id: Number(data.id) || 0,
       },
     });
     if (result) return result;
@@ -167,7 +167,7 @@ const subjectSevices = {
       const result = await db.Subject.findOne({
         attributes: ["host", "deputy", "member"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
       });
       if (result.dataValues) {
@@ -209,7 +209,7 @@ const subjectSevices = {
       let memberList = await db.Subject.findOne({
         attributes: ["member"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
         raw: true,
       });
@@ -228,7 +228,7 @@ const subjectSevices = {
       let currentMember = await db.Subject.findOne({
         attributes: ["member"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
         raw: true,
       });
@@ -247,7 +247,7 @@ const subjectSevices = {
         },
         {
           where: {
-            id: data.subjectId,
+            id: Number(data.subjectId) || 0,
           },
         }
       );
@@ -261,7 +261,7 @@ const subjectSevices = {
       let subject = await db.Subject.findOne({
         attributes: ["member", "host", "deputy"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
         raw: true,
       });
@@ -293,7 +293,7 @@ const subjectSevices = {
           },
           {
             where: {
-              id: data.subjectId,
+              id: Number(data.subjectId) || 0,
             },
           }
         );
@@ -310,7 +310,7 @@ const subjectSevices = {
       let subject = await db.Subject.findOne({
         attributes: ["member", "host", "deputy"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
         raw: true,
       });
@@ -329,7 +329,7 @@ const subjectSevices = {
           },
           {
             where: {
-              id: data.subjectId,
+              id: Number(data.subjectId) || 0,
             },
           }
         );
@@ -346,7 +346,7 @@ const subjectSevices = {
       let subject = await db.Subject.findOne({
         attributes: ["member", "host", "deputy"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
         raw: true,
       });
@@ -363,7 +363,7 @@ const subjectSevices = {
           },
           {
             where: {
-              id: data.subjectId,
+              id: Number(data.subjectId) || 0,
             },
           }
         );
@@ -380,7 +380,7 @@ const subjectSevices = {
       let subject = await db.Subject.findOne({
         attributes: ["member", "host", "deputy"],
         where: {
-          id: data.subjectId,
+          id: Number(data.subjectId) || 0,
         },
         raw: true,
       });
@@ -407,7 +407,7 @@ const subjectSevices = {
           },
           {
             where: {
-              id: data.subjectId,
+              id: Number(data.subjectId) || 0,
             },
           }
         );
@@ -422,7 +422,7 @@ const subjectSevices = {
 const getSubject = async (id) => {
   const result = await db.Subject.findOne({
     where: {
-      id: id,
+      id: Number(id) || 0,
     },
   });
   return result.dataValues;
