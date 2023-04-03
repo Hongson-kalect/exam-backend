@@ -127,4 +127,8 @@ indexRoute.post("/exam/submit-current", submitCurrent);
 indexRoute.get("/member/info", getUserByEmail);
 indexRoute.post("/testlink", upload.single("upload_file"), testLayout);
 
+indexRoute.get("/hello", (req, res) => {
+  res.send("hus hus");
+});
+
 module.exports = indexRoute;
