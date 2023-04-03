@@ -61,8 +61,9 @@ const getEmailByToken = async (token) => {
     where: {
       token: token,
     },
+    raw: true,
   });
-  if (modelRes) return modelRes.dataValues.email;
+  if (modelRes.email) return modelRes.email;
   return false;
 };
 const ExcelToDatabase = async (file, tableName) => {

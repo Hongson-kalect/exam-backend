@@ -98,22 +98,23 @@ const testRoomSevices = {
       return { status: -1, message: "You not have permission on this task" };
   },
   getUnSubmit: async (data) => {
-    if (await checkValidUser(data.userId, data.subjectId)) {
-      const userEmail = await getEmailByToken(data.userId);
-      const getData = await db.History.findOne({
-        where: {
-          userId: Number(userEmail) || 0,
-          testRoomId: Number(data.roomId) || 0,
-          submited: false,
-        },
-        raw: true,
-      });
-      console.log("getData", getData);
-      if (getData) {
-        return { status: 1, data: getData };
-      } else return { status: 1, data: false };
-    } else
-      return { status: -1, message: "You not have permission on this task" };
+    // if (await checkValidUser(data.userId, data.subjectId)) {
+    console.log("data", data);
+    const userEmail = await getEmailByToken(data.userId);
+    const getData = await db.History.findOne({
+      where: {
+        userId: Number(userEmail) || 0,
+        testRoomId: Number(data.roomId) || 0,
+        submited: false,
+      },
+      raw: true,
+    });
+    console.log("getData", getData);
+    if (getData) {
+      return { status: 1, data: getData };
+    } else return { status: 1, data: false };
+    // } else
+    //   return { status: -1, message: "You not have permission on this task" };
   },
   getTestRoomType: async (data) => {
     const result = await db.TestRoom.findAll({
