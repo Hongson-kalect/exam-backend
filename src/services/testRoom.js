@@ -99,11 +99,11 @@ const testRoomSevices = {
   },
   getUnSubmit: async (data) => {
     // if (await checkValidUser(data.userId, data.subjectId)) {
-    console.log("data", data);
+    console.log("getUnSubmit", data);
     const userEmail = await getEmailByToken(data.userId);
     const getData = await db.History.findOne({
       where: {
-        userId: Number(userEmail) || 0,
+        userId: userEmail,
         testRoomId: Number(data.roomId) || 0,
         submited: false,
       },

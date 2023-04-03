@@ -66,7 +66,7 @@ const examSevices = {
     return false;
   },
   getContineu: async (data) => {
-    console.log(data);
+    console.log("getContineu", data);
     if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.roomId) {
         let anserList = [];
