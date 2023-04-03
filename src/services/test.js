@@ -23,7 +23,7 @@ const testSevices = {
           [Op.and]: [
             {
               [Op.or]: {
-                id: { [Op.like]: `%${data.input}%` || "" },
+                id: Number(data.input),
                 code: { [Op.like]: `%${data.input}%` || "" },
                 name: { [Op.like]: `%${data.input}%` || "" },
                 description: { [Op.like]: `%${data.input}%` || "" },

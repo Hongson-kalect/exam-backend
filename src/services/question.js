@@ -22,10 +22,7 @@ const questionSevices = {
     if (result) return true;
     else return false;
   },
-  addAllQuestion: async (data) => {
-    const res = await db.Question.findAll();
-    return { status: 1, res };
-  },
+
   editQuestion: async (data) => {
     let anser = "";
     for (i = 0; i < data.anser.length; i++) {
@@ -78,7 +75,7 @@ const questionSevices = {
           [Op.and]: [
             {
               [Op.or]: {
-                id: { [Op.like]: `%${data.input || ""}%` },
+                id: Number(data.input),
                 question: { [Op.like]: `%${data.input || ""}%` },
                 explain: { [Op.like]: `%${data.input || ""}%` },
               },

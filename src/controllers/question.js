@@ -6,10 +6,6 @@ const addQuestion = async (req, res) => {
   if (servicesRes === true) res.json({ status: 1 });
   else res.json({ status: 0, message: "cant add question" });
 };
-const addAllQuestion = async (req, res) => {
-  const servicesRes = await questionServices.addAllQuestion(req.body);
-  return servicesRes;
-};
 const addExcel = async (req, res) => {
   const servicesRes = await ExcelToDatabase(req.file, "Question");
   if (servicesRes === true)
@@ -19,7 +15,7 @@ const addExcel = async (req, res) => {
 const editQuestion = async (req, res) => {
   const servicesRes = await questionServices.editQuestion(req.body);
   if (servicesRes === true) res.json({ status: 1 });
-  else res.json({ status: 0, message: "cant add question" });
+  else res.send({ status: 0, message: "cant add question" });
 };
 const delQuestion = async (req, res) => {
   const servicesRes = await questionServices.delQuestion(req.params);
@@ -50,6 +46,4 @@ module.exports = {
   getQuestion,
   addQuestionType,
   delQuestion,
-
-  addAllQuestion,
 };

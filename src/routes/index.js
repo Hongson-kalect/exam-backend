@@ -34,7 +34,6 @@ const {
   editQuestion,
   delQuestion,
   addExcel,
-  addAllQuestion,
 } = require("../controllers/question");
 const {
   addTest,
@@ -88,8 +87,7 @@ indexRoute.post("/subject/remove-deputy", removeDeputy);
 indexRoute.post("/subject/make-deputy", makeDeputy);
 indexRoute.post("/subject/kick", kick);
 
-// indexRoute.post("/question", addQuestion);
-indexRoute.get("/question", addAllQuestion);
+indexRoute.post("/question", addQuestion);
 indexRoute.post("/question/add-excel", upload.single("upload_file"), addExcel);
 indexRoute.put("/question/edit", editQuestion);
 indexRoute.delete("/question/del/:id", delQuestion);
