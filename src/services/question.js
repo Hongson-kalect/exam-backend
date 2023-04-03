@@ -75,7 +75,7 @@ const questionSevices = {
           [Op.and]: [
             {
               [Op.or]: {
-                id: Number(data.input),
+                id: Number(data.input) || 1,
                 question: { [Op.like]: `%${data.input || ""}%` },
                 explain: { [Op.like]: `%${data.input || ""}%` },
               },
