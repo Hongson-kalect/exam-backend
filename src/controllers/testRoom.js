@@ -14,8 +14,12 @@ const delTestRoom = async (req, res) => {
   res.json(servicesRes);
 };
 const getUnSubmit = async (req, res) => {
-  const servicesRes = await testRoomServices.getUnSubmit(req.query);
-  res.json(servicesRes);
+  try {
+    const servicesRes = await testRoomServices.getUnSubmit(req.query);
+    res.json(servicesRes);
+  } catch (error) {
+    res.json({ status: -1, message: error });
+  }
 };
 const getTestRoomType = async (req, res) => {
   const servicesRes = await testRoomServices.getTestRoomType(req.body);
