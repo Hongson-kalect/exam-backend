@@ -28,8 +28,8 @@ const getTestRoomType = async (req, res) => {
 };
 const getTestRoom = async (req, res) => {
   const servicesRes = await testRoomServices.getTestRoom(req.query);
-  if (servicesRes) res.json({ status: 1, data: servicesRes });
-  else res.json({ status: 0, message: "cant get testRoom" });
+  if (servicesRes) return await res.json({ status: 1, data: servicesRes });
+  else return await res.json({ status: 0, message: "cant get testRoom" });
 };
 const addTestRoomType = async (req, res) => {
   const servicesRes = await testRoomServices.addTestRoomType(req.body);
