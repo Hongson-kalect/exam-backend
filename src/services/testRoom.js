@@ -76,6 +76,7 @@ const testRoomSevices = {
           allowSeeExplane: data.allowSeeExplane,
           allowSeeResult: data.allowSeeExplane,
           allowSeeScore: data.allowSeeScore,
+          freeTest: data.isFreeTest,
         },
         {
           where: {
