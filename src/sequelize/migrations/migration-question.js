@@ -16,9 +16,13 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       type: {
+        allowNull: false,
+
         type: Sequelize.STRING,
       },
       level: {
+        allowNull: false,
+
         type: Sequelize.STRING,
       },
       anser: {
@@ -26,12 +30,18 @@ module.exports = {
       },
 
       explain: {
+        allowNull: false,
+
         type: Sequelize.TEXT,
       },
       anserTimes: {
+        allowNull: false,
+
         type: Sequelize.INTEGER,
       },
       correctTimes: {
+        allowNull: false,
+
         type: Sequelize.FLOAT,
       },
       createdAt: {

@@ -7,7 +7,11 @@ const addQuestion = async (req, res) => {
   else res.json({ status: 0, message: "cant add question" });
 };
 const addExcel = async (req, res) => {
-  const servicesRes = await ExcelToDatabase(req.file, "Question");
+  const servicesRes = await ExcelToDatabase(
+    req.body.subjectId,
+    req.file,
+    "Question"
+  );
   if (servicesRes === true)
     res.json({ status: 1, message: "Add question completed" });
   else res.json({ status: 0, message: "cant add question" });

@@ -66,7 +66,7 @@ const getEmailByToken = async (token) => {
   if (modelRes.email) return modelRes.email;
   return false;
 };
-const ExcelToDatabase = async (file, tableName) => {
+const ExcelToDatabase = async (subjectId, file, tableName) => {
   // this only work if start with column A, not count first row, arrange column position in excel file is correct
   const xlsx = require("xlsx");
   console.log("file", file);
@@ -120,8 +120,6 @@ const ExcelToDatabase = async (file, tableName) => {
       cellAsString[1] !== "m" &&
       cellAsString[1] > 1
     ) {
-      console.log("current row", currentRow);
-      console.log(" row", cellAsString[1]);
       //Get first row
       if (!isSetCurrentRow) {
         currentRow = Number(cellAsString[1]) || cellAsString[1];
@@ -129,11 +127,12 @@ const ExcelToDatabase = async (file, tableName) => {
       }
       //Create new line if go to orther row
       if (cellAsString[1] !== currentRow) {
+        addValue.subjectId = subjectId;
         await db[tableName].create(addValue);
         addValue = {};
         currentRow = Number(cellAsString[1]) || cellAsString[1];
       }
-      addValue[tableColumn[HeaderArray.indexOf(cellAsString[0]) + 1]] =
+      addValue[tableColumn[HeaderArray.indexOf(cellAsString[0]) + 2]] =
         worksheet[cell].v;
     }
   }
