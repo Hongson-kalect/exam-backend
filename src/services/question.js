@@ -65,7 +65,7 @@ const questionSevices = {
     if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.id) {
         const res = await db.Question.findOne({
-          where: { id: Number(data.id) || 0 },
+          where: { id: data.id },
         });
         return res;
       }
@@ -80,20 +80,51 @@ const questionSevices = {
               },
             },
             {
-              type: {
-                [Op.like]: `%${data.type || ""}%`,
-              },
+              [Op.or]: data.type
+                ? {
+                    type: {
+                      [Op.like]: `%${data.type || ""}%`,
+                    },
+                  }
+                : [
+                    {
+                      type: {
+                        [Op.not]: null,
+                      },
+                    },
+                    {
+                      type: {
+                        [Op.is]: null,
+                      },
+                    },
+                  ],
             },
             {
-              level: {
-                [Op.like]: `%${data.level || ""}%`,
-              },
+              [Op.or]: data.level
+                ? {
+                    type: {
+                      [Op.like]: `%${data.level || ""}%`,
+                    },
+                  }
+                : [
+                    {
+                      type: {
+                        [Op.not]: null,
+                      },
+                    },
+                    {
+                      type: {
+                        [Op.is]: null,
+                      },
+                    },
+                  ],
             },
             {
-              subjectId: Number(data.subjectId) || 0,
+              subjectId: data.subjectId,
             },
           ],
         },
+        order: [["id", "ASC"]],
       });
       return result;
     } else {

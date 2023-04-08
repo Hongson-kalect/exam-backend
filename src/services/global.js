@@ -110,32 +110,38 @@ const ExcelToDatabase = async (subjectId, file, tableName) => {
   let tableWidth = tableColumn.length;
   let currentRow = 0;
   let isSetCurrentRow = false;
+  let loop = 1;
 
   for (let cell in worksheet) {
+    console.log("loop", loop);
     const cellAsString = cell.toString();
-    console.log(cellAsString[0]); //ignore first row (for header)
+    console.log(cellAsString);
 
+    //ignore first row (for header)
     if (
       cellAsString[1] !== "r" &&
       cellAsString[1] !== "m" &&
-      cellAsString[1] > 1
+      cellAsString.slice(1) > 1
     ) {
-      //Get first row
+      //Get row index
       if (!isSetCurrentRow) {
-        currentRow = Number(cellAsString[1]) || cellAsString[1];
+        currentRow = Number(cellAsString.slice(1)) || cellAsString.slice(1);
         isSetCurrentRow = true;
       }
       //Create new line if go to orther row
-      if (cellAsString[1] !== currentRow) {
+      if (Number(cellAsString.slice(1)) !== currentRow) {
+        console.log("row =", cellAsString.slice(1), "currentRow=", currentRow);
         addValue.subjectId = subjectId;
         await db[tableName].create(addValue);
         addValue = {};
-        currentRow = Number(cellAsString[1]) || cellAsString[1];
+        currentRow = Number(cellAsString.slice(1)) || cellAsString.slice(1);
       }
       addValue[tableColumn[HeaderArray.indexOf(cellAsString[0]) + 2]] =
         worksheet[cell].v;
+      loop++;
     }
   }
+  addValue.subjectId = subjectId;
   await db[tableName].create(addValue); //add the last row
   return true;
 };
