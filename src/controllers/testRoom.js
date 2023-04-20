@@ -21,6 +21,14 @@ const getUnSubmit = async (req, res) => {
     res.json({ status: -1, message: error });
   }
 };
+const getResult = async (req, res) => {
+  try {
+    const servicesRes = await testRoomServices.getResult(req.query);
+    res.json(servicesRes);
+  } catch (error) {
+    res.json({ status: -1, message: error });
+  }
+};
 const getTestRoomType = async (req, res) => {
   const servicesRes = await testRoomServices.getTestRoomType(req.body);
   if (servicesRes) res.json({ status: 1, data: servicesRes });
@@ -55,4 +63,5 @@ module.exports = {
   getAttempt,
   startAttempt,
   getUnSubmit,
+  getResult,
 };

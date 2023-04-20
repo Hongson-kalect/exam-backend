@@ -8,6 +8,7 @@ const {
 } = require("../ultis/function");
 const { getEmailByToken } = require("./global");
 const questionService = require("./question");
+const { getTest } = require("./test");
 const testRoomSevices = {
   add: async (data) => {
     console.log(data);
@@ -100,7 +101,6 @@ const testRoomSevices = {
   },
   getUnSubmit: async (data) => {
     // if (await checkValidUser(data.userId, data.subjectId)) {
-    console.log("getUnSubmit", data);
     const userEmail = await getEmailByToken(data.userId);
     const getData = await db.History.findOne({
       where: {
@@ -114,6 +114,82 @@ const testRoomSevices = {
     if (getData) {
       return { status: 1, data: getData };
     } else return { status: 1, data: false };
+    // } else
+    //   return { status: -1, message: "You not have permission on this task" };
+  },
+  getResult: async (data) => {
+    // if (await checkValidUser(data.userId, data.subjectId)) {
+    const userEmail = await getEmailByToken(data.userId);
+    const getHistory = await db.History.findOne({
+      where: {
+        id: Number(data.historyId) || 0,
+      },
+      raw: true,
+    });
+    console.log(getHistory);
+    if (getHistory.testRoomId) {
+      let anserList = [];
+      const res = await db.TestRoom.findOne({
+        where: {
+          id: Number(getHistory.testRoomId) || 0,
+        },
+      });
+
+      const test = await getTest({
+        id: Number(getHistory.testId) || 0,
+        userId: data.userId,
+        subjectId: data.subjectId,
+      });
+      const questionsHash = test.dataValues.question;
+      let questionHashArr = questionsHash
+        .split("|")
+        .filter((item) => item !== "");
+      let questions = [];
+      for (let index = 0; index < questionHashArr.length; index++) {
+        let questionCode = [];
+        let questionItem = {};
+        questionCode = questionHashArr[index]
+          .split("-")
+          .filter((item) => item !== "");
+        const questionDetailRes = await questionService.getQuestion({
+          id: Number(questionCode[0]) || 0,
+          userId: data.userId,
+          subjectId: data.subjectId,
+        });
+        const questionDetail = questionDetailRes.dataValues;
+        anserList = questionDetailRes.dataValues.anser
+          .split("|")
+          .filter((item) => item !== "");
+        questionItem.question = questionDetail.question;
+
+        const ansers = [];
+        for (let index = 1; index < questionCode.length; index++) {
+          ansers.push(anserList[questionCode[index]]);
+        }
+        questionItem.ansers = ansers;
+        questions.push(questionItem);
+      }
+
+      res.dataValues.userAnserChar = getHistory.userAnser.split("|");
+      res.dataValues.userAnser = getHistory.userAnser
+        .replaceAll("a", "0")
+        .replaceAll("b", "1")
+        .replaceAll("c", "2")
+        .replaceAll("d", "3")
+        .split("|");
+      // res.dataValues.userAnser = getHistory.userAnser.split("|");
+      // data.userAnser.split("|").filter((item) => item !== "") || "";
+      res.dataValues.questions = questions;
+      res.dataValues.testId = getHistory.testId;
+      if (res.dataValues.allowSeeResult)
+        res.dataValues.anser = test.dataValues.question;
+      console.log(res.dataValues);
+      return { status: 1, data: res };
+    }
+    // console.log("getData", getData);
+    // if (getData) {
+    //   return { status: 1, data: getData };
+    // } else return { status: 1, data: false };
     // } else
     //   return { status: -1, message: "You not have permission on this task" };
   },

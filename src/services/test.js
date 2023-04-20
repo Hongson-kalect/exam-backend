@@ -10,7 +10,6 @@ const { getEmailByToken } = require("./global");
 const questionService = require("./question");
 const testSevices = {
   getTest: async (data) => {
-    console.log(data);
     if (await checkValidUser(data.userId, data.subjectId)) {
       if (data.id) {
         const res = await db.Test.findOne({

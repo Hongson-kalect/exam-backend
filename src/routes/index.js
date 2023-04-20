@@ -54,6 +54,7 @@ const {
   getAttempt,
   startAttempt,
   getUnSubmit,
+  getResult,
 } = require("../controllers/testRoom");
 const {
   getExam,
@@ -110,6 +111,7 @@ indexRoute.put("/test-room/edit", editTestRoom);
 
 indexRoute.get("/history/get", getHistory);
 indexRoute.get("/history/unsubmit", getUnSubmit);
+indexRoute.get("/history/check-result", getResult);
 indexRoute.get("/get-attempt", getAttempt);
 indexRoute.post("/start-exam", startAttempt);
 

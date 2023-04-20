@@ -24,7 +24,6 @@ app.use("/api", indexRoute);
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-console.log(process.env.PORT);
 
 app.listen(process.env.PORT || 3000, () =>
   console.log(`Example app listening on port ${process.env.PORT || 3000}!`)
