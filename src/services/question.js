@@ -55,6 +55,7 @@ const questionSevices = {
     return true;
   },
   getQuestionType: async (data) => {
+    console.log(data.subjectId)
     const result = await db.Question.findAll({
       attributes: ["type"],
       where:{
@@ -62,6 +63,7 @@ const questionSevices = {
       },
       group: ["type"],
     });
+    console.log('result',result)
     return result;
   },
   getQuestion: async (data) => {
