@@ -27,7 +27,7 @@ const delQuestion = async (req, res) => {
   else res.json({ status: 0, message: "cant add question" });
 };
 const getQuestionType = async (req, res) => {
-  const servicesRes = await questionServices.getQuestionType(req.body);
+  const servicesRes = await questionServices.getQuestionType(req.params);
   if (servicesRes) res.json({ status: 1, data: servicesRes });
   else res.json({ status: 0, message: "cant get question type" });
 };
